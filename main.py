@@ -10,6 +10,14 @@ import json
 import logging
 import schedule
 import time
+from datetime import datetime
+import pytz  # ou zoneinfo se estiver usando Python 3.9+
+
+# Definindo horário de Brasília
+br_tz = pytz.timezone("America/Sao_Paulo")
+now_br = datetime.now(br_tz).strftime("%Y-%m-%d %H:%M:%S")
+
+print(f"[{now_br}] 🕒 Monitoramento iniciado (Horário de Brasília)")
 
 # Carrega o .env
 load_dotenv()
