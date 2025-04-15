@@ -17,8 +17,6 @@ import pytz  # ou zoneinfo se estiver usando Python 3.9+
 br_tz = pytz.timezone("America/Sao_Paulo")
 now_br = datetime.now(br_tz).strftime("%Y-%m-%d %H:%M:%S")
 
-print(f"[{now_br}] 🕒 Monitoramento iniciado (Horário de Brasília)")
-
 # Carrega o .env
 load_dotenv()
 
@@ -35,15 +33,18 @@ logging.basicConfig(level=logging.INFO)
 
 # Função de extrair o preço do produto
 def extrair_preco():
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.content, "html.parser")
-    
+    logging.info("Iniciando a requisição para verificar o preço...")
     try:
+        response = requests.get(URL, timeout=10)  # Timeout de 10 segundos
+        response.raise_for_status()  # Levanta erro para status não OK (200)
+        soup = BeautifulSoup(response.content, "html.parser")
+        
         reais = soup.find("span", class_="andes-money-amount__fraction").get_text()
         centavos = soup.find("span", class_="andes-money-amount__cents")
         centavos = centavos.get_text() if centavos else "00"
         
         preco = float(f"{reais}.{centavos}")
+        logging.info(f"Preço extraído: R$ {preco}")
         return preco
     except Exception as e:
         logging.error(f"Erro ao extrair preço: {e}")
@@ -74,7 +75,7 @@ async def enviar_telegram(mensagem):
         logging.error(f"❌ Erro ao enviar mensagem no Telegram: {e}")
 
 # Função para monitorar o preço
-def monitorar():
+async def monitorar():
     logging.info(f"{time.strftime('%Y-%m-%d %H:%M:%S')} Verificando preço...")
 
     preco_atual = extrair_preco()
@@ -95,20 +96,3 @@ def monitorar():
             # Atualiza o menor preço
             with open("menor_preco.json", "w") as file:
                 json.dump({"menor_preco": preco_atual}, file)
-
-            # Envia notificação por e-mail e Telegram
-            mensagem = f"O menor preço encontrado foi: R$ {preco_atual}"
-
-            # Envia e-mail
-            enviar_email(mensagem)
-
-            # Envia Telegram (assíncrono)
-            asyncio.run(enviar_telegram(mensagem))
-
-if __name__ == "__main__":
-    # Agendamento para rodar a cada 30 minutos
-    schedule.every(30).minutes.do(monitorar)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
