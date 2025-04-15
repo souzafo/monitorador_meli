@@ -20,9 +20,10 @@ jobs:
 
       - name: Instalar dependências
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
+        python -m venv venv  # Criação do ambiente virtual
+        source venv/bin/activate  # Ativando o ambiente virtual no Linux
+        pip install --upgrade pip  # Certificando-se que pip está atualizado
+        pip install -r requirements.txt  # Instalando as dependências
 
       - name: Definir variáveis de ambiente
         run: |
