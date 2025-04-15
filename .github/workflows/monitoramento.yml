@@ -20,15 +20,14 @@ jobs:
 
       - name: Criar ambiente virtual
         run: |
-          python3 -m venv ./env  # Criação do ambiente virtual em diretório separado
+          python3 -m venv ./env  # Criação do ambiente virtual
           ls -l ./env/  # Verifica a estrutura do ambiente virtual
           ls -l ./env/bin/  # Verifica o conteúdo do diretório bin
 
       - name: Instalar dependências
         run: |
-          source ./env/bin/activate  # Ativando o ambiente virtual
-          pip install --upgrade pip  # Certificando-se que pip está atualizado
-          pip install -r requirements.txt  # Instalando as dependências
+          ./env/bin/pip install --upgrade pip  # Usando pip do ambiente virtual
+          ./env/bin/pip install -r requirements.txt  # Instalando as dependências do ambiente virtual
 
       - name: Definir variáveis de ambiente
         run: |
@@ -41,5 +40,4 @@ jobs:
 
       - name: Rodar o script
         run: |
-          source ./env/bin/activate  # Ativa o ambiente virtual
-          python3 main.py  # Executa o script com python3
+          ./env/bin/python3 main.py  # Rodando o script diretamente com o Python do ambiente virtual
