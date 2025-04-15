@@ -20,9 +20,9 @@ jobs:
 
       - name: Criar ambiente virtual
         run: |
-          python -m venv venv  # Criação do ambiente virtual
+          python3 -m venv venv  # Criação do ambiente virtual
           ls venv/  # Verifique a estrutura do ambiente virtual (para depuração)
-      
+
       - name: Ativar ambiente virtual e instalar dependências
         run: |
           source venv/bin/activate  # Ativando o ambiente virtual
@@ -41,4 +41,4 @@ jobs:
       - name: Rodar o script
         run: |
           source venv/bin/activate  # Ativa o ambiente virtual
-          python main.py  # Executa o script
+          python3 main.py  # Executa o script com python3
