@@ -21,9 +21,10 @@ jobs:
       - name: Criar ambiente virtual
         run: |
           python3 -m venv venv  # Criação do ambiente virtual
-          ls venv/  # Verifique a estrutura do ambiente virtual (para depuração)
+          ls -l venv/  # Verifica a estrutura do ambiente virtual
+          ls -l venv/bin/  # Verifica o conteúdo do diretório bin
 
-      - name: Ativar ambiente virtual e instalar dependências
+      - name: Instalar dependências
         run: |
           source venv/bin/activate  # Ativando o ambiente virtual
           pip install --upgrade pip  # Certificando-se que pip está atualizado
