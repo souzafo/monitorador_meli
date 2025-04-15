@@ -1,0 +1,39 @@
+name: Monitoramento de Preço
+
+on:
+  schedule:
+    - cron: "0 3,9,15,21 * * *"  # 00h, 06h, 12h, 18h (horário de Brasília)
+  workflow_dispatch:
+
+jobs:
+  monitorar-produto:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v2
+
+      - name: Instalar Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Instalar dependências
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Definir variáveis de ambiente
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" >> $GITHUB_ENV
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> $GITHUB_ENV
+          echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> $GITHUB_ENV
+          echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> $GITHUB_ENV
+          echo "EMAIL_TO=${{ secrets.EMAIL_TO }}" >> $GITHUB_ENV
+          echo "PRODUCT_URL=${{ secrets.PRODUCT_URL }}" >> $GITHUB_ENV
+
+      - name: Rodar o script
+        run: |
+          source venv/bin/activate
+          python main.py
