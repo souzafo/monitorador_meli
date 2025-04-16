@@ -30,6 +30,8 @@ DEBUG_MODE = os.getenv("DEBUG_MODE", "False").lower() == "true"
 br_tz = pytz.timezone("America/Sao_Paulo")
 logging.basicConfig(level=logging.INFO)
 
+print("🔧 URL do Produto:", os.getenv("PRODUCT_URL"))
+
 def extrair_preco():
     response = requests.get(URL)
     soup = BeautifulSoup(response.content, "html.parser")
