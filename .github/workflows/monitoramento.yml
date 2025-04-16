@@ -2,36 +2,37 @@ name: Monitoramento de Preço
 
 on:
   schedule:
-    - cron: "0 3,9,15,21 * * *"  # 00h, 06h, 12h, 18h (horário de Brasília)
+    - cron: '0 * * * *'  # Roda todo início de hora (UTC)
   workflow_dispatch:
 
 jobs:
-  monitorar-produto:
+  monitorar:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositório
-        uses: actions/checkout@v2
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v3
 
-      - name: Instalar Python
-        uses: actions/setup-python@v2
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: Instalar dependências
+      - name: 📦 Instalar dependências
         run: |
-          pip install --upgrade pip  # Atualiza o pip
-          pip install -r requirements.txt  # Instala as dependências do arquivo requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Definir variáveis de ambiente
+      - name: 🚀 Executar script principal
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          PRODUCT_URL: ${{ secrets.PRODUCT_URL }}
+          SEND_NOTIFICATIONS: ${{ secrets.SEND_NOTIFICATIONS }}
+          SEND_STATUS_TELEGRAM: ${{ secrets.SEND_STATUS_TELEGRAM }}
+          DEBUG_MODE: ${{ secrets.DEBUG_MODE }}
         run: |
-          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" >> $GITHUB_ENV
-          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> $GITHUB_ENV
-          echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> $GITHUB_ENV
-          echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> $GITHUB_ENV
-          echo "EMAIL_TO=${{ secrets.EMAIL_TO }}" >> $GITHUB_ENV
-          echo "PRODUCT_URL=${{ secrets.PRODUCT_URL }}" >> $GITHUB_ENV
-
-      - name: Rodar o script
-        run: |
-          python3 main.py  # Rodando o script diretamente com python3
+          python main.py
