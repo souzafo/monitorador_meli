@@ -6,6 +6,9 @@ from main import monitorar, verificar_status
 # Carrega variáveis do .env
 load_dotenv()
 
+# Define origem da execução como local
+os.environ["EXECUTION_ORIGIN"] = "local"
+
 print("🚀 Verificando se variáveis foram carregadas...\n")
 
 # Exibir variáveis principais

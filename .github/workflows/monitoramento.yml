@@ -20,6 +20,7 @@ jobs:
       DEBUG_MODE: ${{ vars.DEBUG_MODE }}
       SEND_NOTIFICATIONS: ${{ vars.SEND_NOTIFICATIONS }}
       SEND_STATUS_TELEGRAM: ${{ vars.SEND_STATUS_TELEGRAM }}
+      EXECUTION_ORIGIN: github
 
     steps:
       - name: ⬇️ Checkout do repositório
@@ -49,5 +50,3 @@ jobs:
           else
             git commit -m "🔄 Atualização de menor preço automática"
             git push
-          fi
-  
