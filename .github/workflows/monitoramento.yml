@@ -10,14 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # 🔒 Secrets (sensíveis)
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       EMAIL_USER: ${{ secrets.EMAIL_USER }}
       EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
-      # ⚙️ Variables (não sensíveis)
-      PRODUCT_URL: ${{ vars.PRODUCT_URL }}
+      PRODUCT_URLS: ${{ vars.PRODUCT_URLS }}
       EMAIL_TO: ${{ vars.EMAIL_TO }}
       DEBUG_MODE: ${{ vars.DEBUG_MODE }}
       SEND_NOTIFICATIONS: ${{ vars.SEND_NOTIFICATIONS }}
@@ -40,3 +38,16 @@ jobs:
       - name: ▶️ Rodar o script de monitoramento
         run: |
           python main.py
+
+      - name: 📂 Verificar mudanças de preço
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add precos/
+          if git diff --cached --quiet; then
+            echo "🟢 Nenhuma alteração de preço para commitar."
+          else
+            git commit -m "🔄 Atualização de menor preço automática"
+            git push
+          fi
+  
